@@ -1,0 +1,65 @@
+# ==============================================================================
+# Mini Pupper 2 - Gazebo Harmonic to ROS 2 Jazzy Bridge Configuration
+# ==============================================================================
+
+# 1. シミュレーション時間の同期
+- ros_topic_name: "clock"
+  gz_topic_name: "clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# 2. 2D-LiDARセンサー (frame_id を lidar_link または base_link に上書き強制結合)
+- ros_topic_name: "scan"
+  gz_topic_name: "scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+
+# 3. IMUセンサー (同じくフレーム名を base_link に統一)
+- ros_topic_name: "imu/data"
+  gz_topic_name: "imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+
+# 4. カメラ：カラー画像
+- ros_topic_name: "camera/image"
+  gz_topic_name: "camera/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+
+# 5. カメラ：デプス(深度)画像
+- ros_topic_name: "camera/depth_image"
+  gz_topic_name: "camera/depth_image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+
+# 6. カメラ：カメラパラメータ (これがズレるとデプスが点群化できません)
+- ros_topic_name: "camera/camera_info"
+  gz_topic_name: "camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+
+# 7. カメラ：3D点群データ (ご提示いただいた最新の PointCloudPacked 仕様)
+- ros_topic_name: "camera/points"
+  gz_topic_name: "camera/points"
+  ros_type_name: "sensor_msgs/msg/PointCloud2"
+  gz_type_name: "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+#  override_frame_id: "base_link" #
+

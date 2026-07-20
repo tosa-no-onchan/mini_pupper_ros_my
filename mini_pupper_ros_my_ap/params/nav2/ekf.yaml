@@ -1,0 +1,41 @@
+### ekf config file ###
+ekf_filter_node:
+    ros__parameters:
+      use_sim_time: true
+      frequency: 15.0
+      # フレーム定義
+      odom_frame: odom
+      base_link_frame: base_link
+      #base_link_frame: base_footprint
+      world_frame: odom
+      # TFを配信させる設定（ここが重要）
+      publish_tf: true
+      # どのトピックから姿勢を作るか指定
+      #odom0: /odom/raw
+      odom0: /odom/raw_fixed
+      # [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+      # 位置(x,y)と方位(yaw)をそのままTFにコピーさせるための行列設定
+      odom0_config: [true,  true,  false,
+                     false, false, false,
+                     false, false, false,
+                     false, false, false,
+                     false, false, false]
+
+      odom0_queue_size: 10
+      #odom0_queue_size: 20
+      #odom0_differential: true
+      odom0_differential: false
+      #odom0_relative: true
+      odom0_relative: false
+
+      # 2. IMU（/imu/data）側の設定
+      #imu0: /imu/data
+      imu0: /imu/data_fixed
+      imu0_config: [false, false, false,  # 位置(X, Y, Z)はIMUには無い
+                    false,  false,  true,   # ⭕️ Orientation (Roll, Pitch, Yaw) を完全に信用する
+                    false, false, false,  # 速度
+                    false, false, false,  # 角速度 (必要ならここを true, true, true にしても良いです)
+                    false, false, false]  # 加速度
+
+      imu0_pose_rejection_threshold: 2.0  # 異常値の弾き度合い（適当な正の値）
+      imu0_relative: true
