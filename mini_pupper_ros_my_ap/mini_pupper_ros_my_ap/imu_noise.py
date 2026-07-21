@@ -34,7 +34,8 @@ class ImuNoise(Node):
 
         # --- スリップ率 の設定
         # 自分で、ロボットの移動距離の誤差に応じてセット
-        self.slip_rate = 0.67
+        #self.slip_rate = 0.67
+        self.slip_rate = 0.66
 
 
     # --- 🆕 [新規] IMUの共分散を書き換えるコールバック関数 ---

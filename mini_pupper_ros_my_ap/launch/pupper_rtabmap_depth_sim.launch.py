@@ -20,7 +20,13 @@
 #
 # 3.2 run rtabmap_ros on remote PC or SBC
 #  1) term2
+#   i) SLAM
 #   $ ros2 launch mini_pupper_ros_my_ap pupper_rtabmap_depth_sim.launch.py SBC:=true
+#     注) SLAM で、~/.ros/rtabmap.db を作成した後、下の localization mode で、db の読み込みエラーがでたら、
+#     $ rtabmap-recovery ~/.ros/rtabmap.db
+#
+#   ii) Localization
+#   $ ros2 launch mini_pupper_ros_my_ap pupper_rtabmap_depth_sim.launch.py SBC:=true localization:=true
 #
 #  2) rviz
 #   $ ros2 launch mini_pupper_ros_my_ap pupper_rtabmap_depth_sim.launch.py PC:=true
@@ -61,7 +67,7 @@
 #
 # append.
 # how to map save ,on Remote PC OK
-# ros2 run nav2_map_server map_saver_cli -f ~/map/my_map --ros-args -p save_map_timeout:=10000.0
+# ros2 run nav2_map_server map_saver_cli -f ~/map/my_pupper_map --ros-args -p save_map_timeout:=10000.0
 
 import os
 from launch_ros.actions import Node
@@ -105,6 +111,9 @@ def generate_launch_description():
 
     mini_pupper_ros_my_ap=get_package_share_directory('mini_pupper_ros_my_ap')
 
+    # ホームディレクトリからの絶対パスを取得
+    db_absolute_path = os.path.expanduser('/home/nishi/.ros/rtabmap.db')
+
     parameters={
           #'frame_id':'base_footprint',
           'frame_id':'base_link',
@@ -139,7 +148,7 @@ def generate_launch_description():
           "Rtabmap/DetectionRate": "2.0", # 地図の更新頻度を上げる (Hz)
           "RGBD/ProximityBySpace": "true", # 近くを通ったときに過去の地図とマッチングさせる
           "RGBD/OptimizeFromGraphEnd": "true", # ロボットの最新位置を基準に地図を最適化する
-
+          'database_path':db_absolute_path,
     }
     rtabmap_remappings=[
         # subscribe
@@ -286,7 +295,13 @@ def generate_launch_description():
                     package='rtabmap_slam', executable='rtabmap', output='screen',
                     parameters=[parameters,
                     {'Mem/IncrementalMemory':'False',
-                    'Mem/InitWMWithAllNodes':'True'}],
+                    'Mem/InitWMWithAllNodes':'True',
+                    # 起動時にロボットの推定位置（ポーズ）をマップの原点 (0, 0, 0) に強制リセットする
+                    'RGBD/StartAtOrigin': 'true',
+                    # 起動時に過去のマップ全体のグリッド/点群をパブリッシュさせるための設定
+                    'RGBD/OptimizeFromGraphEnd': 'false', # 初回一括ロード時は false の方が安定する場合があります
+                    #'database_path':db_absolute_path
+                    }],
                     remappings=rtabmap_remappings,
                     namespace=LaunchConfiguration('namespace'),
                 ),
@@ -319,6 +334,7 @@ def generate_launch_description():
                 condition=IfCondition(LaunchConfiguration("rviz")),
                 arguments=[["-d"], [LaunchConfiguration("rviz_cfg")]],  # 3D の表示はこちら
                 #arguments=[["-d"], [LaunchConfiguration("rviz_cfg2")]],    # 2D の表示は、こちら
+                namespace=LaunchConfiguration('namespace'),
                 ),
             ],
             condition=IfCondition(LaunchConfiguration('PC')),
