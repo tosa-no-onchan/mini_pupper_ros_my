@@ -16,16 +16,12 @@
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
-#  override_frame_id: "base_link" #
-
 # 3. IMUセンサー (同じくフレーム名を base_link に統一)
 - ros_topic_name: "imu/data"
   gz_topic_name: "imu/data"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
-
-#  override_frame_id: "base_link" #
 
 # 4. カメラ：カラー画像
 - ros_topic_name: "camera/image"
@@ -34,16 +30,12 @@
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
 
-#  override_frame_id: "base_link" #
-
 # 5. カメラ：デプス(深度)画像
 - ros_topic_name: "camera/depth_image"
   gz_topic_name: "camera/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS
-
-#  override_frame_id: "base_link" #
 
 # 6. カメラ：カメラパラメータ (これがズレるとデプスが点群化できません)
 - ros_topic_name: "camera/camera_info"
@@ -52,8 +44,6 @@
   gz_type_name: "gz.msgs.CameraInfo"
   direction: GZ_TO_ROS
 
-#  override_frame_id: "base_link" #
-
 # 7. カメラ：3D点群データ (ご提示いただいた最新の PointCloudPacked 仕様)
 - ros_topic_name: "camera/points"
   gz_topic_name: "camera/points"
@@ -61,5 +51,27 @@
   gz_type_name: "gz.msgs.PointCloudPacked"
   direction: GZ_TO_ROS
 
-#  override_frame_id: "base_link" #
+# 9. ミニプードル専用の本物の座標・速度取得用
+- ros_topic_name: "mini_pupper_pose"
+  gz_topic_name: "model/mini_pupper_2/pose"
+  ros_type_name: "geometry_msgs/msg/PoseArray"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+
+#- ros_topic_name: "mini_pupper_pose"
+#  gz_topic_name: "model/mini_pupper_2/pose"     # ⭕ 特殊文字を全部削除、スラッシュも無し！
+#  ros_type_name: "geometry_msgs/msg/PoseStamped" # ⭕ ROS 2側はタイムスタンプ付きの型
+#  gz_type_name: "gz.msgs.Pose"                   # ⭕ Gazebo側はPoseの型
+#  direction: GZ_TO_ROS
+
+
+# 8. ロボットの世界座標と本物の速度取得用
+#- ros_topic_name: "world/default/pose/info"
+#  gz_topic_name: "world/default/pose/info"
+#  ros_type_name: "tf2_msgs/msg/TFMessage"
+#  gz_type_name: "gz.msgs.Pose_V"
+#  direction: GZ_TO_ROS
+
+
 

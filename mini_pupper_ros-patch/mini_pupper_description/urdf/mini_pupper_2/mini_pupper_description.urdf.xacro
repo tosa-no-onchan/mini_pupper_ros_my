@@ -1497,6 +1497,17 @@
     <plugin name="gz::sim::systems::Sensors" filename="gz-sim-sensors-system">
       <render_engine>ogre2</render_engine> <!-- Depthカメラに必須の設定 -->
     </plugin>
+    <!-- add by nishi 2026.7.25 -->
+    <plugin filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
+      <publish_link_pose>false</publish_link_pose> <!-- ❌ これを false に！ -->
+      <publish_sensor_pose>false</publish_sensor_pose>
+      <publish_collision_pose>false</publish_collision_pose>
+      <publish_visual_pose>false</publish_visual_pose>
+      <publish_nested_model_pose>true</publish_nested_model_pose> <!-- ⭕ これだけ true -->
+      <use_pose_vector_msg>true</use_pose_vector_msg>
+      <static_update_frequency>-1</static_update_frequency>
+    </plugin>
+
   </gazebo>
 
 </robot>
